@@ -24,13 +24,12 @@ def shell_command(replay_name):
         "-f", "alsa",
         "-i", "default",  # 默认音频设备
         "-c:v", "libx264",
-        # "-preset", "ultrafast",
         "-preset", "veryfast",
         "-b:v", "3000k",  # 视频比特率设置为 3000 kbps
         "-c:a", "aac",
         "-b:a", "128k",  # 音频比特率设置为 128 kbps
         "-t", "180",  # 录制时长180s
-        f"{replay_path}/{replay_name}.mp4"
+        f"{replay_path}/{replay_name}.ts"
     ]
     return command
 
@@ -59,8 +58,8 @@ def get_elapsed_time_since_creation(replay_path):
             # 现在的时间
             current_time = datetime.datetime.now().timestamp()
             elapsed_time = current_time - time_out
-            # if elapsed_time > 3600 * 24 * 3:  # 大于三天 删除文件
-            if elapsed_time > 3600:  # 1小时 删除文件
+            if elapsed_time > 3600 * 24 * 3:  # 大于三天 删除文件
+            # if elapsed_time > 3600:  # 1小时 删除文件
                 os.remove(key)
 
 
@@ -78,3 +77,7 @@ if __name__ == '__main__':
         main()
 
 # 6行 指定replay路径
+
+'''shell
+ffmpeg -f v4l2 -video_size 1920x1080 -framerate 30 -re -i /dev/video0 -f alsa -i default -c:v libx264 -preset veryfast -b:v 3000k -c:a aac -b:a 32k -t 180  -vf fps=30 output.ts
+'''
